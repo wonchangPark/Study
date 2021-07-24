@@ -53,4 +53,67 @@ float, double은 0.1을 정확히 표현할 수 없어서 근사치로 표현하
 문자열의 비교는 == 이 아닌 equals() 메서드를 이용한다.   
 
   
+## 참조 타입
+기본 타입: 정수, 실수, 문자, 논리 리터럴   
+참조 타입: 객체의 번지를 참조하는 타입으로 배열, 열거, 클래스, 인터페이스를 말한다.   
+변수는 스택 영역에 객체는 힙 영역에 생성된다.   
+예를 들어 String name = “독서”라는 변수를 생성했다면, name은 스택영역에 생성이 되지만 “독서”는 힙영역에 생성이 되고 그것의 주소를 name이 값으로 가지고 있는 것이다.   
+따라서 name을 호출하면 name은 번지값으로 힙영역에 있는 “독서”에 접근하는 것이다.    
+힙영역에서 참조하는 변수나 필드가 없다면 쓰레기로 보고 garbage collector가 제거한다.   
+JVM stack 영역은 각 스레드마다 하나씩 존재한다.   
+
+배열에서 String[] names = new String[] { “민수”, “영자”, “지원”} 이런식으로 값을 넣어줄 수도 있다. 하지만 보통은 빈 배열을 만들어 놓고 넣는다.   
+
+프로그램 실행을 위해 main() 메소드가 필요하다. 그리고 그 안의 매개값인 String[] args 도 필요하다.   
+java 클래스로 프로그램을 실행하면 JVM은 길이가 0인 String 배열을 먼저 생성하고 main() 메소드를 호출할 때 매개값으로 전달한다. 만약 “java 클래스” 뒤에 공백으로 구분된 문자열 목록을 주고 실행하면, 문자열 목록으로 구성된 String[] 배열이 생성되고 main() 메소드를 호출할 때 매개값으로 전달된다.   
+java 클래스 문자열0 문자열1 문자열2   
+String[] args = { 문자열0, 문자열1, 문자열2 };   
+이 args 가 main() 메소드 호출 시 전달된다. 그러면 main() 메소드는 args 매개 변수를 통해서 커맨드 라인에서 입력된 데이터의 수(배열의 길이)와 입력된 데이터(배열의 항목 값)을 알 게 된다. 이 값들을 args를 이용해서 사용할 수 있게 된다.   
+```
+public class MainStringArrayArgument {
+	public static void main(String[] args){
+		if(args.length != 2){
+			System.out.println(“프로그램의 사용법”);
+			System.out.println(“java MainStringArrayArgument num1 num2”);
+			System.exit(0);
+		}
+		
+		String strNum1 = args[0];
+		String strNum2 = args[1];
+
+		int num1 = Integer.parseInt(strNum1);
+		int num2 = Integer.parseInt(strNum2);
+
+		int result = num1 + num2;
+		System.out.println(num1 + “+” + num2 + “=“ + result);
+	}
+}
+```
+
+배열 복사는 System.arraycopy(Object src, int srcPos, Object dest, int destPos, int length); 를 사용한다.   
+dest 오브젝트를 src를 토대로 어디부터 어디까지 복사할 것인지를 정할 수 있다.   
+
+향상된 for 문
+```
+public class AdvancedForExample{
+	public static  void main(String[] args){
+		int[] scores = { 95, 71, 84, 93, 87 };
+		
+		int sum = 0;
+		for(int score : scores){
+			sum = sum + score;
+		}
+		System.out.println(“점수 총합 = “+ sum);
+	}
+}
+```
+scores 배열에서 하나씩 꺼내서 int score에 저장하고 진행한다. 배열에서 가져올 항목이 더이상 없을 때는 for문을 빠져나온다.   
+
+
+enum은 열거타입이다. 이 때, 열거 상수는 모두 대문자이다.   
+public enum Week { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY }   
+이렇게 선언을 하고 나면 이 타입을 사용할 수 있다.   
+Week today = Week.MONDAY;   
+자바는 컴퓨터의 날짜 및 요일, 시간을 사용할 수 있게 Date, Calendar, LocalDateTime 등의 클래스를 제공한다.   
+
   
