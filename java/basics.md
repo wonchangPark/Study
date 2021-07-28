@@ -116,4 +116,130 @@ public enum Week { MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY }
 Week today = Week.MONDAY;   
 자바는 컴퓨터의 날짜 및 요일, 시간을 사용할 수 있게 Date, Calendar, LocalDateTime 등의 클래스를 제공한다.   
 
+## 클래스
+
+객체 지향 프로그래밍의 특징.  
+캡슐화 : 객체의 필드, 메소드를 하나로 묶고, 실제 구현 내용을 감추는 것이다. 외부 객체는 객체 내부의 구조를 알지 못하며 객체가 노출해서 제공하는 필드와 메소드만 이용할 수 있다. 캡슐화를 사용하는 이유는 외부의 잘못된 사용으로 인해 객체가 손상되지 않도록 하는 데 있다. 이렇게 노출시킬 것인지 아닐지를 정하는 것으로 접근 제한자(Access Modifier)를 사용한다.   
+상속 : 부모(상위) 객체는 자기가 가지고 있는 필드와 메소드를 자식(하위) 객체에게 물려주어 자식 객체가 사용할 수 있게 해준다. 상속은 상위 객체를 재사용해서 하위 객체를 쉽고 빨리 설계할 수 있도록 도와주고, 반복된 코드의 중복을 줄여준다. 이렇게 함으로써 유지 보수 시간을 최소화시켜주기도 한다.   
+다형성(Polymorphism) : 다형성은 같은 타입이지만 실행 결과가 다양한 객체를 이용할 수 있는 성질을 말한다. 즉, 하나의 타입에 여러 객체를 대입함으로써 다양한 기능을 이용할 수 있다. 다형성의 효과로 객체는 부품화가 가능하다. 예를 들어 자동차를 설계할 때 타이어 인터페이스 타입을 적용했다면 이 인터페이스를 구현한 실제 타이어들은 어떤 것이든 상관없이 장착(대입)이 가능하다.   
+
+클래스의 구성 멤버는 field, constructor, method가 있다. 생성자는 당연히 객체 생성 시 초기화 하는 역할을 담당한다.   
+new 연산자와 같이 사용되어 클래스로부터 객체를 생성할 때 호출되어 객체의 초기화를 담당한다.   
+생성자가 성공적으로 실행되면 힙 영역에 객체가 생성되고 객체의 주소가 리턴된다.   
+생성자 오버로딩을 통해 다양한 데이터를 이용해서 객체를 초기화 한다.   
+```
+public class Car {
+
+	//field
+	String company = “현대자동차”;
+	String model;
+	String color;
+	int maxSpeed;
+
+	// contructor
+	Car(){}
+
+	Car(String model) {
+		this(model, “은색”, 250);
+	}
+
+	Car(String model, String color) {
+		this(model, color, 250);
+	}
+
+	Car(String model, String color, int maxSpeed){
+		this.model = model;
+		this.color = color;
+		this.maxSpeed = maxSpeed;
+	}
+}
+```
+메소드의 경우 매개 변수의 수를 모르는 경우가 있다. 이럴 경우는 배열을 넘겨준다.   
+int sum1(int[] values) {}   
+혹은 배열말고 그냥 수를 리스트 형태로 넘겨도 된다.   
+int sum2(int … values) {}   
+이렇게 정의를 하면 sum2(1,2,3,4,5); 이런 식으로 수를 어떻게 줘도 상관없다.   
+그리고 메소드 또한 오버로딩을 이용하여 매개 변수의 타입, 개수, 순서 를 다르게 함으로써 같은 이름의 메소드를 만들 수 있다.   
+
+## 정적 멤버와 static
+정적 멤버는 클래스에 고정된 멤버로서 객체를 생성하지 않고 사용할 수 있는 필드와 메소드를 말한다. 정적 멤버는 객체에 소속된 멤버가 아니라 클래스에 소속된 멤버이다.   
+static을 하는 것에 대한 기준은 객체마다 가지고 있어야 할 데이터라면 인스턴스 필드로 선언하고, 공용적인 데이터라면 정적 필드로 선언하는 것이 좋다.   
+예를 들어 Calculator 클래스에서 파이 변수는 객체마다 가지고 있을 필요가 없으므로 정적 필드로 선언하는 것이 좋다.   
+메소드의 경우의 기준은 인스턴스 필드를 이용해서 실행해야 하면 인스턴스 메소드로 선언하고 아니라면 정적 메소드가 좋다.   
+예는 Calculator 클래스의 덧셈, 뺄셈 기능은 인스턴스 필드를 이용하기 보다는 외부에서 주어진 매개값들을 가지고 수행하므로 정적 메소드로 선언하는 것이 좋다. 정적 멤버의 경우는 인스턴스가 없으므로 클래스.메소드 이런식으로 사용한다.   
+정적 필드는 생성자가 없으므로 초기화 작업은 정적 블록인 static{} 에서 한다.   
+```
+public class Television {
+	static String company = “Samsung”;
+	static String model = “LCD”;
+	static String info;
+
+	static {
+		info = company + “-“ + model;
+	}
+}
+```
+당연한 거지만 정적 블록이나 정적 메소드 안에서는 정적 필드가 인스턴스 필드나 인스턴스 메소드는 들어갈 수가 없다. 그래서 static 인 main 메소드도 main 메소드 밖의 선언된 필드가 static이 아니면 에러가 나는 이유이다.    
+```
+public class Car {
+	int speed;
+
+	public static void main(String[] args){
+		Car myCar = new Car(); // 클래스로 인스턴스를 만들어주고 인스턴스 필드인 speed를 사용해줘야함
+		myCar.speed = 60;
+	}
+}
+```
+
+## 싱글톤(Singleton)
+전체 프로그램에서 단 하나의 객체만 만드는 경우가 있다. 싱글톤을 만드려면 클래스 외부에서 new 연산자로 생성자를 호출할 수 없도록 막아야 한다.   
+생성자를 외부에서 호출할 수 없도록 하려면 생성자 앞에 private 접근 제한 자를 붙여준다. private 접근 제한자는 모든 외부 클래스에서 접근하지 못하게 하는 것이다.   
+그리고 자신의 타입인 정적 필드를 하나 선언하고 자신의 객체를 생성해 초기화 한다.   
+```
+public class Singleton {
+	private static Singleton singleton = new Singleton();
+	// static 선언으로 인스턴스없이 만들수 있게 하고, private으로 인해 내부에서만 사용가능하게 해준다.
+
+	private Singleton(){}
+
+	static Singleton getInstance() {
+		return singleton;
+	}
+}
+```
+Singleton obj1 = Singleton.getInstance();   
+이런식으로 사용해주면 된다. 아무리 많은 객체를 만들어도 오직 하나의 객체만이 사용된다.   
+
+## final 필드와 상수
+final 필드는 초기값이 저장되면 최종적인 값이 되어서 프로그램 실행 도중 수정할 수 없다는 것이다.   
+final 필드의 초기값을 주는 방법은 딱 두가지 이다. 필드 선언 시에 주는 방법, 생성자에서 주는 방법.  
+예제를 들면 주민등록번호 필드는 한 번 값이 저장되면 변경할 수 없도록 final 필드로 선언한다.    
+하지만 주민등록번호는 Person 객체가 생성될 때 부여되므로 Person 클래스 설계 시 초기값을 미리 줄 수 없다.    
+그래서 생성자 매개값으로 주민등록번호를 받아서 초기값으로 지정해준다.   
+반면 nation은 항상 고정된 값을 갖기 때문에 필드 선언 시 초기값으로 “Korea”를 주었다.   
+```
+public class Person {
+	final String nation = “Korea”;
+	final String ssn;
+	String name;
+
+	public Person(String ssn, String name){
+		this.ssn = ssn;
+		this.name = name;
+	}
+}
+```
+ ## 상수 (static final)
+말 그대로 정적이면서 최종적인 값이다. 인스턴스가 없으면서 최종적인 값이니 그냥 고정된 상수이다.   
+
+## 어노테이션 (annotation)
+어노테이션은 메타데이터라고 볼 수 있다. metadata 란 애플리케이션이 처리해야 할 데이터가 아니라 컴파일 과정과 실행 과정에서 코드를 어떻게 컴파일하고 처리할 지를 알려주는 정보이다.   
+-> 컴파일러에게 코드 문법 에러를 체크하도록 정보를 제공.  
+-> 소프트웨어 개발 툴이 빌드나 배치 시 코드를 자동으로 생성할 수 있도록 정보를 제공.  
+-> 실행 시 특정 기능을 실행하도록 정보를 제공.  
+
+
+
+
+
   
