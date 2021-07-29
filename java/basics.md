@@ -239,7 +239,84 @@ public class Person {
 -> 실행 시 특정 기능을 실행하도록 정보를 제공.  
 
 
+## 상속
 
+상속을 해도 부모 클래스의 모든 필드와 메소드들을 물려받는 것은 아니다. 부모 클래스의 private 접근 제한을 갖는 필드와 메소드는 제외된다.   
+상속은 extends 를 사용해서 부모 클래스를 정한다.   
+자바는 다중 상속이 안된다.   
+지식 객체를 생성하면, 부모 객체가 먼저 생성되고 자식 객체가 그 다음에 생성된다.   
+super()를 통해 부모 생성자를 호출한다.   
+final 은 수정될 수가 없다는 것이므로 상속을 할 수 없다.   
+public final class 클래스{ …} 이렇게 클래스를 정의하면. 상속이 불가능하게 된다.   
 
+## 메소드 재정의
+부모  클래스의 어떤 메소드는 자식 클래스가 사용하기에 적합하지 않을 수도 있다. 이 경우 상속된 일부 메소드는 자식 클래스에서 다시 수정해서 사용해야 한다.   
+이 때, overriding 기능을 사용한다.   
+```
+public class Calculator {
+	double areaCircle(double r) {
+		System.out.println(“Calculator 객체의 areaCircle() 실행”);
+		return 3.14159 * r * r;
+	}
+}
+
+public class Computer extends Calculator {
+	@Override
+	double areaCircle(double r){
+		System.out.println(“Computer 객체의 areaCircle() 실행”);
+		return Math.PI * r * r;
+	}
+}
+```
+## 부모 메소드 호출(super)
+super.부모메소드(); 이런 식으로 자식 클래스에서 부모 클래스의 메소드를 호출할 수 있다.
+
+## 다형성
+자식은 부모의 특징과 기능을 상속받기 때문에 부모와 동일하게 취급될 수 있다. 
+```
+class Animal{…}   
+class Cat extends Animal{…}   
+Cat cat = new Cat();   
+Animal animal = cat;   
+```
+이렇게 하면 cat과 animal은 타입만 다를뿐 동일한 Cat 객체를 참조한다.
+
+다형성을 하용하는 이유는 동일한 타입을 사용하지만 다양한 결과가 나오는 성질 때문에 그렇다.
+``` 
+class Car {
+	//field
+	Tire frontLeftTire = new Tire();
+	Tire frontRightTire = new Tire();
+	Tire backLeftTire = new Tire();
+	Tire backRightTire = new Tire();
+
+	//method
+	void run(){
+		frontLeftTire.roll();
+		frontRightTire.roll();
+		backLeftTire.roll();
+		backRightTire.roll();
+	}
+}
+ 
+Car myCar = new Car();
+myCar.frontRightTire = new HankookTire();
+myCar.backLeftTire = new KumhoTire();
+myCar.run();
+```
+Car 클래스에는 4개의 Tire 필드가 있지만  그 중 두개의 타이어를 Tire의 자식 클래스인 HankookTire 와 KumhoTire로 교체했다.   
+이것이 가능한 것이 다형성이다. 그리고 Tire의 roll 메소드를 재정의 했기 때문에 run()을 호출해도 에러가 나지 않는다. 이렇게 부품화가 가능해지는 것이다.   
+
+instanceof 연산자를 사용하면 객체가 어떤 클래스의 인스턴지인지 확인할 수 있다.   
+boolean result = 객체 instanceof 타입   
+
+## 추상 클래스
+추상 클래스는 인터페이스와 비슷하다. 실체 클래스들의 공통되는 필드와 메소드를 따로 선언한 클래스가 추상 클래스이다. 추상클래스는 객체로 생성할 수가 없다.   
+오직 부모 클래스로만 사용된다. 추상 클래스를 사용하는 이유는 2가지 이다.   
+1. 실체 클래스들의 공통된 필드와 메소드의 이름을 통일할 목적 : 실체 클래스를 설계하는 사람이 여러 사람일 경우, 동일한 데이터와 기능임에도 불구하고 이름이 다를 수 있다. 예를 들어, 전원을 켜다라는 메소드를 Telephone에서는 turnOn(), SmartPhone 에서는 powerOn() 이라고 설계할 수 있다. 따라서 Telephone 과 SmartPhone은 Phone을 상속함으로써 필드와 메소드 이름을 통일 시킬 수 있다.
+2. 실체 클래스를 작성할 때 시간을 절약
+
+추상 클래스는 abstract를 사용해서 선언한다. 인터페이스의 경우는 필드는 오직 상수필드만 사용할 수 있지만 추상 클래스는 필드를 생성할 수 있다.   
+ 
 
   
