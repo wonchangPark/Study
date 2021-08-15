@@ -318,5 +318,35 @@ boolean result = 객체 instanceof 타입
 
 추상 클래스는 abstract를 사용해서 선언한다. 인터페이스의 경우는 필드는 오직 상수필드만 사용할 수 있지만 추상 클래스는 필드를 생성할 수 있다.   
  
+## BufferedReader 와 BufferedWriter
+BufferedReader 와 BufferedWriter는 말 그대로 입력과 출력에 버퍼를 사용하는 것이다.   
+일반적인 input은 키보드의 입력이 키를 누르는 즉시 바로 프로그램에 전달된다. 하지만 버퍼를 사용하면 키보드의 입력이 있을 때마다 한 문자씩 버퍼로 전송한다.   
+버퍼가 가득 차거나 개행 문자가 나타나면 버퍼의 내용을 한 번에 프로그램에 전달한다.   
+버퍼를 거쳐 출력하는 것보다 즉시 출력이 더 빠르다고 생각할 수 있으나 하드 디스크는 속도가 느리고 외부 장치(키보드, 모니터)와 데이터 입출력도 시간이 오래 걸린다. 따라서 중간에 버퍼를 두어 한 번에 묶어 보내는 것이 더 빠르다.   
 
-  
+Scanner 는 띄어쓰기와 개행문자를 경계로 하여 입력 값을 인식한다. 따라서 원하는 타입의 입력을 받을 수 있다.   
+int a = scanner.nextInt() 이렇게 하면 바로 int 값으로 받아올 수 있다.   
+하지만 버퍼는 무조건 String 으로 고정되기 때문에 입력받은 데이터를 우리가 다시 타입을 바꿔줘야 한다.   
+Scanner 가 확실히 더 편하지만 버퍼 사이즈가 1024 char이기 때문에 많은 입력을 필요로 할 경우에는 성능이 굉장히 안좋아진다.   
+
+BufferedReader 는 개행문자만 경계로 인식한다. 버퍼 사이즈가 8192 char(16384byte) 이기 때문에 입력이 많을 때 Scanner 보다 훨씬 좋다.  
+멀티 스레드 환경에서는 BufferedReader 가 동기화 되기 때문에 안전하고, Scanner는 동기화가 되지 않는다.   
+
+BufferedWriter 는 많은 출력이 필요할 때 사용한다. 보통은 System.out.println()을 사용하지만 많은 출력일 땐 이렇게 버퍼를 사용하는 것이 좋다.   
+```
+BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+String str = “abcdef”;
+bw.write(str);
+bw.newLine(); // 개행
+bw.flush();
+bw.close();
+```
+BufferedWriter 의 경우 버퍼를 잡아 놓았기 때문에 반드시 사용한 후에 flush() 를 사용하여 남아있는 데이터를 모두 출력하고 close() 를 통해 닫아주어야 한다.   
+close() 를 하고 나면 출력 스트림을 아예 닫아버리기 때문에 모두 출력하고 나서 close() 를 사용해 주자.   
+
+String은 불변성을 갖는다. concat이나 +연산자를 이용해도 실제의 String 값을 버리고 새로운 값으로 재할당하는 것이다.   
+이 불변성의 장점은 변하지 않는 문자열을 자주 읽어들이는 경우 그 주소로 찾아가 읽기만 하면 되기 때문에 아주 좋다.   
+하지만 문자열에 변화가 일어나는 경우에는 힙, 메모리에 많은 garbage가 생성되고, 이는 힙 메모리 부족으로 되어 프로그램 성능에 영향을 미친다.   
+이를 해결하기 위해 나온 것이 StringBuffer/StringBuilder이다. 이것들은 가변성을 가져서 append(), delete() 로 언제든 바꿀 수 있다.   
+StringBuffer 와 StringBuilder의 차이점은 StringBuffer 는 동기화를 지원하여 멀티 스레드 환경에서 안전하다.   
+하지만 StringBuilder 는 동기화를 지원하지 않는다. 만약 단일 스레드라면 StringBuffer 보다 성능이 뛰어나다.   
