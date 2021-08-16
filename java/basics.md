@@ -350,3 +350,157 @@ String은 불변성을 갖는다. concat이나 +연산자를 이용해도 실제
 이를 해결하기 위해 나온 것이 StringBuffer/StringBuilder이다. 이것들은 가변성을 가져서 append(), delete() 로 언제든 바꿀 수 있다.   
 StringBuffer 와 StringBuilder의 차이점은 StringBuffer 는 동기화를 지원하여 멀티 스레드 환경에서 안전하다.   
 하지만 StringBuilder 는 동기화를 지원하지 않는다. 만약 단일 스레드라면 StringBuffer 보다 성능이 뛰어나다.   
+
+## 인터페이스
+모든 메소드가 추상 메소드이다. 추상 클래스보다 한 단계 더 추상적인 것이다.   
+따라서 인터페이스를 만들때 abstract를 붙이지 않아도 추상메소드라는 것을 알아야 한다.   
+그리고 추상클래스는 단일 상속인데, 인터페이스는 다중 상속이 된다.   
+추상 클래스의 목적은 상속을 받아서 기능을 확장시키는 것.  
+인터페이스의 목적은 구현하는 모든 클래스에 대해 특정한 메소드가 반드시 존재하도록 강제하는 역할.  
+
+인터페이스는 객체의 교환성을 높여주기 때문에 다형성을 구현하는 매우 중요한 역할을 한다.   
+다형성은 하나의 타입에 대입되는 객체에 따라서 실행 결과가 다양한 형태로 나오는 성질을 말한다.   
+인터페이스는 개발 코드와 객체가 서로 통신하는 접점 역할을 한다. 개발 코드가 인터페이스의 메소드를 호출하면 인터페이스는 객체의 메소드를 호출시킨다.   
+따라서 개발 코드는 객체의 내부 구조를 알 필요가 없고 인터페이스의 메소드만 알고 있으면 된다.   
+중간에 인터페이스를 두는 이유는 개발 코드를 수정하지 않고, 사용하는 객체를 변경할 수 있도록 하기 위해서이다.   
+인터페이스는 하나의 객체가 아니라 여러 객체들과 사용이 가능하므로 어떤 객체를 사용하느냐에 따라서 실행 내용과 리턴값이 다를 수 있다.   
+인터페이스는 오직 상수와 메소드(abstract method, default method, static method)만을 구성 멤버로 가진다.   
+
+## 익명 구현 객체
+구현 클래스를 만들어 사용하는 것이 일반적이고, 클래스를 재사용할 수 있기 때문에 편리하지만, 일회성의 구현 객체를 만들기 위해 소스 파일을 만들고 클래스를 선언하는 것은 비효율적이다. 따라서 소스 파일 없이 구현 객체를 만드는 것이 익명 구현 객체이다.   
+```
+public class RemoteControlExample {
+	public static void main(String[] args){
+		RemoteControl rc = new RemoteControl(){
+			public void turnOn(){ /*실행문*/}
+			public void turnOff(){ /*실행문*/}
+			public void setVolume(int volume){ /*실행문*/}
+		};
+	}
+}
+```
+
+## 다중 인터페이스 구현 클래스
+인터페이스A 와 인터페이스B 가 객체의 메소드를 호출할 수 있으려면 객체는 이 두 인터페이스를 모두 구현해야 한다.   
+
+## 인터페이스 예제
+
+먼저 인터페이스를 만들어준다.   
+```
+public interface RemoteControl{
+	// 상수
+	int MAX_VOLUME = 10;
+	int MIN_VOLUME = 0;
+	
+	// 추상 메소드
+	void turnOn();
+	void turnOff();
+	void setVolume(int volume);
+
+	// 디폴트 메소드
+	default void setMute(boolean mute){
+		if(mute){
+			System.out.println(“무음 처리합니다.”);
+		}
+	}
+
+	// 정적 메소드
+	static void changeBattery(){
+		System.out.println(“건전지를 교환합니다.”);
+	}
+}
+```
+
+인터페이스를 상속받은 클래스를 만들어준다.   
+```
+public class Television implements RemoteControl{
+	// 필드
+	private int volume;
+
+	// turnOn() 추상 메소드의 실체 메소드
+	public void turnOn(){
+		System.out.println(“TV를 켭니다.”);
+	}
+	// turnOff() 추상 메소드의 실체 메소드
+	public void turnOff(){
+		System.out.println(“TV를 끕니다.”);
+	}
+	// setVolume() 추상 메소드의 실체 메소드
+	public void setVolume(int volume){
+		if(volume>RemoteControl.MAX_VOLUME){
+			this.volume = RemoteControl.MAX_VOLUME;
+		} else if { … }
+	}
+}
+```
+
+만약 위처럼 구체적으로 추상메소드들을 구현하지 않고 하나라도 빼먹으면 에러가 뜨며 추상 클래스로 만들던가 모든 추상메소드를 구현하던가 해야 한다.   
+
+이제 인터페이스 사용   
+```
+public class RemoteControlExample{
+	public static void main(String[] args){
+		RemoteControl rc;
+		rc = new Television();
+		rc.turnOn(); // television의 turnOn
+		rc = new Audio();
+		rc.turnOn(); // audio의 turnOn
+	}
+}
+```
+이런식으로 인터페이스에 구현 클래스를 넣으면 언제든 객체를 교환할 수 있게 되고 다형성을 구현할 수 있게 된다.   
+
+디폴트 메소드는 인터페이스에 선언되었지만, 인터페이스에서 바로 사용할 수 없다. 추상 메소드가 아닌 인스턴스 메소드이므로 구현 객체가 있어야 사용할 수 있다.   
+쉽게 생각하면, 인터페이스의 모든 구현 객체가 가지고 있는 기본 메소드이다.   
+하지만 특정 구현 객체는 내용 수정이 필요할 수도 있다.   
+그러면 디폴트 메소드를 오버라이딩해서 자신에게 맞게 수정하면 된다.   
+
+정적 메소드는 인터페이스로 바로 호출이 가능하다.   
+
+인터페이스를 배열로 구현 객체 관리가 가능하다.   
+위의 예제인 remoteControl을 보면 2개의 remoteControl을 television과 audio로 각각 선언했지만 배열을 사용해서 선언도 가능하다.   
+```
+RemoteControl[] controls = {
+	new Television(),
+	new Audio()
+};
+```
+이렇게 하면 향상된 for 문을 사용해서 할 수도 있다.   
+```
+for(RemoteControl control : controls){
+	control.turnOn();
+}
+```
+
+우리는 인터페이스를 사용해서 다형성을 구현했다. 즉, 인터페이스 에다가 구현객체를 넣어서 그 인터페이스를  사용했다.   
+이렇게 사용하면 자동변환이 빈번하게 일어나게 되는데, 어떤 구현 객체가 변환되어 있는지 알 수 없는 상태에서 무작정 변환을 할 경우 ClassCastException이 일어날 수 있다. 따라서 어떤 구현 객체가 인터페이스 타입으로 변환되었는지 확인하기 위해 instanceof 연산자를 사용한다.   
+```
+if( vehicle instanceof Bus){
+	Bus bus = (Bus) vehicle;
+}
+```
+
+Vehicle 이라는 인터페이스를 만들고 메소드로 run()을 만들었다고 하자.   
+그리고 이 Vehicle을 상속하는 Taxi와 Bus를 만들었다고 하자. 이 Taxi와 Bus에는 checkFare() 메소드가 있다.   
+이런 경우엔 Vehicle 이라는 인터페이스에 구현 객체인 Bus를 넣었다고 하면, Bus 에만 있는 checkFare()은 사용할 수가 없고, 강제 변환으로 Bus로 만들어준 뒤에 사용할 수 있다. 이럴때에도 instanceof를 사용하여 Vehicle이 Bus 구현 객체로 변환이 되어있는 지를 확인한 다음에 사용하도록 한다.   
+
+인터페이스는 또다른 인터페이스를 상속할 수 있으며, 다중 상속이 가능하다.   
+```
+public interface 하위 인터페이스 extends 상위인터페이스1, 상위인터페이스2{…}
+```
+
+하위 인터페이스를 구현하는 클래스는 하위 인터페이스의 메소드뿐만 아니라 상위 인터페이스의 모든 추상 메소드에 대한 실체 메소드를 구현 해야 한다.   
+그렇기 때문에 다음과 같이 하위 및 상위 인터페이스 타입으로 변환이 가능하다.   
+하위인터페이스 변수 = new 구현클래스();   
+상위인터페이스1 변수 = new 구현클래스();   
+상위인터페이스2 = new 구현클래스();   
+
+디폴트 메소드는 도대체 왜 만든 것일까?   
+유지보수에 있다.   
+기존에 MyInterface 라는 인터페이스와 이를 구현한 MyClassA 라는 클래스가 있다고 하자.    
+나중에 MyInterface에 기능을 추가해야할 필요성이 생겼다. 그래서 MyInterface에 추상 메소드를 추가했는데, 그렇게 되면 MyClassA에서 문제가 생긴다.   
+추가된 추상 메소드에 대한 실체 메소드가 MyClassA에 없기 때문이다. 그래서 이 디폴트 메소드를 사용한다.   
+디폴트 메소드는 추상 메소드가 아니기 때문에 구현 클래스에서 실체 메소드를 작성할 필요가 없다.   
+따라서 MyClassA 는 아무런 문제 없이 계속 사용이 가능하다.   
+
+
