@@ -688,3 +688,38 @@ public class Main{
 매개 변수나 로컬 변수는 메소드 실행이 끝나면 스택 메모리에서 사라지기 때문에 익명 객체에서 사용할 수 없게 되므로 문제가 발생한다.   
 따라서 익명 객체 내부에서 메소드의 매개 변수나 로컬 변수를 사용할 경우, 이 변수들은 final 특성을 가져야 한다.   
 익명 객체에서 사용된 매개 변수와 로컬 변수는 모두 final 특성을 갖는다고 생각하면 된다.   
+
+## Exception
+실행 예외
+NullPointerException : 객체 참조가 없는 상태, null 값을 갖는 참조 변수로 객체 접근 연산자인 도트(.)를 사용했을 때 발생   
+
+ArrayIndexOutOfBoundsException : 배열에서 인덱스 범위를 초과하여 사용할 경우.   
+
+NumberFormatException : 문자열로 되어 있는 데이터를 숫자로 변경하는 경우에 문자열에 숫자가 아닌 문자가 포함되어 있으면 당연히 숫자로 변경을 못하기 때문에 이 예외를 발생시킨다.   
+
+ClassCastException : 타입 변환(casting) 은 상위 클래스와 하위 클래스 간에 발생하고 구현 클래스와 인터페이스 간에도 발생한다. 이러한 관계가 아니라면 클래스는 다른 클래스로 변환할 수 없다.    instanceof 연산자를 통해 타입 변환이 가능한지 확인한다.   
+
+예외 처리 코드는  try-catch-finally 블록을 이용해서 처리한다.   
+try 블록 내부에서 다양한 종류의 예외가 발생할 수 있다. 이 경우, catch 블록을 여러 개 사용하는 데, 주의할 점은 상위 예외 클래스가 하위 예외 클래스보다 아래쪽에 위치해야 한다.   
+위에서부터 아래로 차례대로 검색이 되기 때문이다.   
+
+throws 예외 클래스 로 예외를 떠넘길 수 있다.    
+```
+public void method1(){
+	try{
+		method2();
+	} catch(ClassNotFoundException e){
+		//예외 처리 코드
+		System.out.println(“클래스가 존재하지 않습니다.”);
+	}
+}
+
+public void method2() throws ClassNotFoundException{
+	Class clazz = Class.forName(“java.lang.String2”);
+}
+```
+method2에서 예외를 떠넘겼다. 그러면 method2()를 사용한 곳에서 예외 처리를 해줘야 한다.   
+
+예외 클래스를 우리가 만들어서 사용할 수도 있다. 상위 예외 클래스를 상속 받기만 하면 된다.   
+예외 발생은 throw new HomeMadeException(“메시지”); 이런 식으로 발생시킨다.   
+
